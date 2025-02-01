@@ -164,6 +164,10 @@ header file. */
 
 /* USER CODE BEGIN Defines */
 /* Section where parameter definitions can be added (for instance, to override default ones in FreeRTOS.h) */
+
+#define configUSE_EDF_VD_SCHEDULER 1
+//#define configIDLE_TASK_PERIOD 100 //if not defines here, default value is 100 
+
 /* USER CODE END Defines */
 
 #endif /* FREERTOS_CONFIG_H */

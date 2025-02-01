@@ -1161,6 +1161,21 @@
     #define configRUN_ADDITIONAL_TESTS    0
 #endif
 
+#ifndef configUSE_EDF_VD_SCHEDULER
+    #define configUSE_EDF_VD_SCHEDULER    0
+#endif
+
+#if ( configUSE_EDF_VD_SCHEDULER == 1 )
+    #define configUSE_PREEMPTION 0
+    #define configSUPPORT_STATIC_ALLOCATION 0
+    #define configTASK_CRTICALITY_LOW 1
+    #define configTASK_CRTICALITY_HIGH 2
+    #define configEDF_VD_CASE_1 1
+    #define configEDF_VD_CASE_2 2
+    #define systemCRITCALITY_LOW 1
+    #define systemCRITCALITY_HIGH 2
+#endif
+
 
 /* Sometimes the FreeRTOSConfig.h settings only allow a task to be created using
  * dynamically allocated RAM, in which case when any task is deleted it is known

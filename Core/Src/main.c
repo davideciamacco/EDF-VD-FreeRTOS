@@ -94,8 +94,6 @@ int main(void)
 
   /* USER CODE END 2 */
 
-  /* Init scheduler */
-  osKernelInitialize();
 
   /* Call init function for freertos objects (in app_freertos.c) */
   MX_FREERTOS_Init();
@@ -118,7 +116,7 @@ int main(void)
   }
 
   /* Start scheduler */
-  osKernelStart();
+  vTaskStartScheduler();
 
   /* We should never get here as control is now taken by the scheduler */
 

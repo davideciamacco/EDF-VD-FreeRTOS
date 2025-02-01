@@ -49,6 +49,10 @@
  * correct privileged Vs unprivileged linkage and placement. */
 #undef MPU_WRAPPERS_INCLUDED_FROM_API_FILE /*lint !e9021 !e961 !e750. */
 
+#if ( configUSE_EDF_VD_SCHEDULER == 1 )
+    #define configTMR_TASK_PERIOD ( configIDLE_TASK_PERIOD - 1 )
+    #define configTMR_TASK_WCET 10
+#endif
 
 /* This entire source file will be skipped if the application is not configured
  * to include software timer functionality.  This #if is closed at the very bottom
@@ -269,7 +273,11 @@
                                        configTIMER_TASK_STACK_DEPTH,
                                        NULL,
                                        ( ( UBaseType_t ) configTIMER_TASK_PRIORITY ) | portPRIVILEGE_BIT,
-                                       &xTimerTaskHandle );
+                                       &xTimerTaskHandle, 
+                                       configTMR_TASK_PERIOD,
+                                       configTASK_CRTICALITY_LOW,
+                                       configTMR_TASK_WCET,
+                                       configTMR_TASK_WCET);
             }
             #endif /* configSUPPORT_STATIC_ALLOCATION */
         }

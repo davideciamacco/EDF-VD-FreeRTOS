@@ -118,6 +118,13 @@ typedef enum
     eSetValueWithoutOverwrite /* Set the task's notification value if the previous value has been read by the task. */
 } eNotifyAction;
 
+/* Criticality level of a task used in EDF-VD scheduler*/
+typedef enum
+{
+    eCriticality1 = 0, /* Low criticality task */
+    eCriticality2,       /* High criticality task */
+} eCriticalityLevel;
+
 /*
  * Used internally only.
  */
@@ -357,12 +364,25 @@ typedef enum
  * \ingroup Tasks
  */
 #if ( configSUPPORT_DYNAMIC_ALLOCATION == 1 )
+    #if (configUSE_EDF_VD_SCHEDULER == 1)
+        BaseType_t xTaskCreate( TaskFunction_t pxTaskCode,
+                                const char * const pcName, /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+                                const configSTACK_DEPTH_TYPE usStackDepth,
+                                void * const pvParameters,
+                                UBaseType_t uxPriority,
+                                TaskHandle_t * const pxCreatedTask,
+                                TickType_t xTaskPeriod, 
+                                eCriticalityLevel eCriticality,
+                                TickType_t xWCET1, 
+                                TickType_t xWCET2 ) PRIVILEGED_FUNCTION;
+    #else
     BaseType_t xTaskCreate( TaskFunction_t pxTaskCode,
                             const char * const pcName, /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
                             const configSTACK_DEPTH_TYPE usStackDepth,
                             void * const pvParameters,
                             UBaseType_t uxPriority,
                             TaskHandle_t * const pxCreatedTask ) PRIVILEGED_FUNCTION;
+    #endif
 #endif
 
 /**
