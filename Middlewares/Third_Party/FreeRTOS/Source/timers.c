@@ -49,10 +49,6 @@
  * correct privileged Vs unprivileged linkage and placement. */
 #undef MPU_WRAPPERS_INCLUDED_FROM_API_FILE /*lint !e9021 !e961 !e750. */
 
-#if ( configUSE_EDF_VD_SCHEDULER == 1 )
-    #define configTMR_TASK_PERIOD ( configIDLE_TASK_PERIOD - 1 )
-    #define configTMR_TASK_WCET 10
-#endif
 
 /* This entire source file will be skipped if the application is not configured
  * to include software timer functionality.  This #if is closed at the very bottom
@@ -268,16 +264,27 @@
             }
             #else /* if ( configSUPPORT_STATIC_ALLOCATION == 1 ) */
             {
-                xReturn = xTaskCreate( prvTimerTask,
-                                       configTIMER_SERVICE_TASK_NAME,
-                                       configTIMER_TASK_STACK_DEPTH,
-                                       NULL,
-                                       ( ( UBaseType_t ) configTIMER_TASK_PRIORITY ) | portPRIVILEGE_BIT,
-                                       &xTimerTaskHandle, 
-                                       configTMR_TASK_PERIOD,
-                                       configTASK_CRTICALITY_LOW,
-                                       configTMR_TASK_WCET,
-                                       configTMR_TASK_WCET);
+                #if ( configUSE_EDF_VD_SCHEDULER  == 1)
+                    xReturn = xTaskCreate(
+                        prvTimerTask,
+                        configTIMER_SERVICE_TASK_NAME,
+                        configTIMER_TASK_STACK_DEPTH,
+                        NULL,
+                        ( ( UBaseType_t ) configTIMER_TASK_PRIORITY ) | portPRIVILEGE_BIT,
+                        &xTimerTaskHandle,
+                        configTIMER_TASK_PERIOD,
+                        configTASK_CRTICALITY_LOW,
+                        configTIMER_TASK_WCET,
+                        configTIMER_TASK_WCET);
+                #else
+                    xReturn = xTaskCreate(
+                        prvTimerTask,
+                        configTIMER_SERVICE_TASK_NAME,
+                        configTIMER_TASK_STACK_DEPTH,
+                        NULL,
+                        ( ( UBaseType_t ) configTIMER_TASK_PRIORITY ) | portPRIVILEGE_BIT,
+                        &xTimerTaskHandle);
+                #endif
             }
             #endif /* configSUPPORT_STATIC_ALLOCATION */
         }

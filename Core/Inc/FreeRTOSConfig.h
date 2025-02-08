@@ -51,7 +51,6 @@
 #if defined(__ICCARM__) || defined(__ARMCC_VERSION) || defined(__GNUC__)
 #include <stdint.h>
 extern uint32_t SystemCoreClock;
-void xPortSysTickHandler(void);
 #endif
 #ifndef CMSIS_device_header
 #define CMSIS_device_header "stm32h5xx.h"
@@ -63,8 +62,8 @@ void xPortSysTickHandler(void);
 #define configENABLE_FPU                         0
 #define configENABLE_MPU                         0
 
-#define configUSE_PREEMPTION                     1
-#define configSUPPORT_STATIC_ALLOCATION          1
+#define configUSE_PREEMPTION                     0
+#define configSUPPORT_STATIC_ALLOCATION          0
 #define configSUPPORT_DYNAMIC_ALLOCATION         1
 #define configUSE_IDLE_HOOK                      0
 #define configUSE_TICK_HOOK                      0
@@ -166,7 +165,20 @@ header file. */
 /* Section where parameter definitions can be added (for instance, to override default ones in FreeRTOS.h) */
 
 #define configUSE_EDF_VD_SCHEDULER 1
-//#define configIDLE_TASK_PERIOD 100 //if not defines here, default value is 100 
+
+
+#ifndef configUSE_EDF_VD_SCHEDULER
+    #define configUSE_EDF_VD_SCHEDULER    0
+#endif
+
+#if ( configUSE_EDF_VD_SCHEDULER == 1 )
+    #define configTASK_CRTICALITY_LOW 1
+    #define configTASK_CRTICALITY_HIGH 2
+    #define configEDF_VD_CASE_1 1
+    #define configEDF_VD_CASE_2 2
+    #define systemCRITCALITY_LOW 1
+    #define systemCRITCALITY_HIGH 2
+#endif
 
 /* USER CODE END Defines */
 

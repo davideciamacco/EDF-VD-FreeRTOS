@@ -2,3 +2,4 @@ Middlewares/Third_Party/CMSIS
 Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2
 diario.txt
 *.c
+Debug/
