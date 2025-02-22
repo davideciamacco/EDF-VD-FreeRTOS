@@ -418,10 +418,10 @@ PRIVILEGED_DATA static volatile UBaseType_t uxSchedulerSuspended = ( UBaseType_t
 #if ( configUSE_EDF_VD_SCHEDULER  == 1 )
     PRIVILEGED_DATA static volatile UBaseType_t uxCaseEDFVD = ( UBaseType_t ) 0U;
     PRIVILEGED_DATA static volatile UBaseType_t uxSystemCriticality = systemCRITCALITY_LOW;
-    PRIVILEGED_DATA static List_t xReadyTasksListEDFVD; /**< List of ready tasks for the EDF-VD scheduler. */
-    TickType_t xUtilization11 = 0;
-    TickType_t xUtilization21 = 0;
-    TickType_t xUtilization22 = 0;
+    PRIVILEGED_DATA static List_t pxReadyTasksListEDFVD; /**< List of ready tasks for the EDF-VD scheduler. */
+    float xUtilization11 = 0;
+    float xUtilization21 = 0;
+    float xUtilization22 = 0;
 #endif
 
 /*lint -restore */
@@ -440,28 +440,37 @@ PRIVILEGED_DATA static volatile UBaseType_t uxSchedulerSuspended = ( UBaseType_t
             ( pxTCB )->xTaskDeadline = xDeadline;
             listSET_LIST_ITEM_VALUE( &( ( pxTCB )->xStateListItem ), pxTCB->xTaskDeadline);            
             traceMOVED_TASK_TO_READY_STATE( pxTCB ); //not sure if this needs to be here $$
-            vListInsert( &(xReadyTasksListEDFVD), &( ( pxTCB )-> xStateListItem) );                                                 
+            vListInsert( &(pxReadyTasksListEDFVD), &( ( pxTCB )-> xStateListItem) );                                                 
         } while( 0 );
     }
 
 
     void prvRemoveL1Tasks(){
-        /*List_t *pxList = &xReadyTasksListEDFVD;
+        List_t *pxList = &pxReadyTasksListEDFVD;
         ListItem_t *pxIterator = listGET_HEAD_ENTRY( pxList );
         ListItem_t *pxEnd = listGET_END_MARKER( pxList );
         while( pxIterator != pxEnd ){
             TCB_t *pxTCB = listGET_LIST_ITEM_OWNER( pxIterator );
-            if( pxTCB->eCriticality == systemCRITCALITY_HIGH ){
-                //listREMOVE( pxIterator );
-                traceMOVED_TASK_TO_READY_STATE( pxTCB );
-                vListInsert( &(pxReadyTasksLists[pxTCB->uxPriority]), &( ( pxTCB )-> xStateListItem) );
+            if( pxTCB->eCriticality == systemCRITCALITY_LOW ){
+                listREMOVE( pxIterator );
             }
             pxIterator = listGET_NEXT( pxIterator );
-        }*/
+        }
+
+        pxList = &pxDelayedTaskList;
+        pxIterator = listGET_HEAD_ENTRY( pxList );
+        pxEnd = listGET_END_MARKER( pxList );
+        while( pxIterator != pxEnd ){
+            TCB_t *pxTCB = listGET_LIST_ITEM_OWNER( pxIterator );
+            if( pxTCB->eCriticality == systemCRITCALITY_LOW ){
+                listREMOVE( pxIterator );
+            }
+            pxIterator = listGET_NEXT( pxIterator );
+        }
     }
 
     void prvUpdateL2Deadline(){
-        List_t *pxList = &xReadyTasksListEDFVD;
+        List_t *pxList = &pxReadyTasksListEDFVD;
         ListItem_t *pxIterator = listGET_HEAD_ENTRY( pxList );
         ListItem_t const *pxEnd = listGET_END_MARKER( pxList );
         TickType_t xGamma = xUtilization21 / (1- xUtilization11);
@@ -476,14 +485,26 @@ PRIVILEGED_DATA static volatile UBaseType_t uxSchedulerSuspended = ( UBaseType_t
     }
 
     void prvResetL2Deadline(){
-        List_t *pxList = &xReadyTasksListEDFVD;
+        List_t *pxList = &pxReadyTasksListEDFVD;
         ListItem_t *pxIterator = listGET_HEAD_ENTRY( pxList );
         ListItem_t const *pxEnd = listGET_END_MARKER( pxList );
         TickType_t xGamma = xUtilization21 / (1- xUtilization11);
         while( pxIterator != pxEnd ){
             TCB_t *pxTCB = listGET_LIST_ITEM_OWNER( pxIterator );
             if( pxTCB->eCriticality == systemCRITCALITY_HIGH ){
-                ( pxTCB )->xTaskDeadline = ( pxTCB )->xTaskReleaseTime + ( pxTCB )->xTaskPeriod * xGamma;
+                ( pxTCB )->xTaskDeadline = ( pxTCB )->xTaskReleaseTime + ( pxTCB )->xTaskPeriod;
+                listSET_LIST_ITEM_VALUE( &( ( pxTCB )->xStateListItem ), pxTCB->xTaskDeadline);
+            }
+            pxIterator = listGET_NEXT( pxIterator );
+        }
+
+        pxList = &pxDelayedTaskList;
+        pxIterator = listGET_HEAD_ENTRY( pxList );
+        pxEnd = listGET_END_MARKER( pxList );
+        while( pxIterator != pxEnd ){
+            TCB_t *pxTCB = listGET_LIST_ITEM_OWNER( pxIterator );
+            if( pxTCB->eCriticality == systemCRITCALITY_HIGH ){
+                ( pxTCB )->xTaskDeadline = ( pxTCB )->xTaskReleaseTime + ( pxTCB )->xTaskPeriod;
                 listSET_LIST_ITEM_VALUE( &( ( pxTCB )->xStateListItem ), pxTCB->xTaskDeadline);
             }
             pxIterator = listGET_NEXT( pxIterator );
@@ -1013,9 +1034,9 @@ static void prvAddNewTaskToReadyList( TCB_t * pxNewTCB ) PRIVILEGED_FUNCTION;
 #if ( configUSE_EDF_VD_SCHEDULER == 1)
     void vSystemSetCriticalityLevel(){
         TickType_t xCheck = 0;
-        /*Read all tasks in xReadyTasksListEDFVD*/
-        List_t * pxReadyTasksListEDFVD = &xReadyTasksListEDFVD;
-        ListItem_t * pxIterator = listGET_HEAD_ENTRY( pxReadyTasksListEDFVD );
+        /*Read all tasks in pxReadyTasksListEDFVD*/
+        List_t * ppxReadyTasksListEDFVD = &pxReadyTasksListEDFVD;
+        ListItem_t * pxIterator = listGET_HEAD_ENTRY( ppxReadyTasksListEDFVD );
         while( pxIterator != NULL )
         {
             TCB_t * pxTCB = listGET_LIST_ITEM_OWNER( pxIterator );
@@ -1033,6 +1054,7 @@ static void prvAddNewTaskToReadyList( TCB_t * pxNewTCB ) PRIVILEGED_FUNCTION;
         }
         else if(xUtilization11 + xCheck <= 1){
             uxCaseEDFVD = configEDF_VD_CASE_2;
+            prvUpdateL2Deadline();
         }
         else{
             //raise error
@@ -3184,26 +3206,23 @@ BaseType_t xTaskIncrementTick( void )
 
         /* EDF-VD Logic Implemetation*/
         #if ( configUSE_EDF_VD_SCHEDULER == 1 )
-            if ( uxCaseEDFVD ==  configEDF_VD_CASE_1 ){
+            if ( uxCaseEDFVD ==  configEDF_VD_CASE_1 & uxSystemCriticality == systemCRITCALITY_LOW){
+                if(pxCurrentTCB->xTaskReleaseTime - xTickCount > pxCurrentTCB->xWCET1){
+                    uxSystemCriticality = systemCRITCALITY_HIGH;
+                }//se task attuale release - now > WCET1 allora uxSystemCriticality == systemCRITCALITY_HIGH 
+                
                 if ( uxSystemCriticality == systemCRITCALITY_HIGH){
-                    /*Move all task of L1 to waiting*/
-                    
+                    /*Remoove all task of L1*/
+                    prvRemoveL1Tasks();
                 }
             }
-            if ( uxCaseEDFVD ==  configEDF_VD_CASE_2 ){
-                if ( uxSystemCriticality == systemCRITCALITY_LOW){
-                    /*Change deadlines of L2*/
-
-                    /*Apply EDF*/
-                    
-                }
+            if ( uxCaseEDFVD ==  configEDF_VD_CASE_2 & uxSystemCriticality == systemCRITCALITY_LOW){
                 if ( uxSystemCriticality == systemCRITCALITY_HIGH){
-                    /*Move all task of L1 to waiting*/
+                    /*Remove all task of L1 */
+                    prvRemoveL1Tasks();
 
                     /*Reset deadlines of L2*/
-
-                    /*Apply EDF*/
-                    
+                    prvResetL2Deadline();                    
                 }
             }
             
@@ -3394,7 +3413,7 @@ void vTaskSwitchContext( void )
         #if (configUSE_EDF_VD_SCHEDULER == 0)
             taskSELECT_HIGHEST_PRIORITY_TASK(); /*lint !e9079 void * is used as this macro is used with timers and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
         #else
-            pxCurrentTCB = (TCB_t *) listGET_OWNER_OF_HEAD_ENTRY ( & (xReadyTasksListEDFVD));
+            pxCurrentTCB = (TCB_t *) listGET_OWNER_OF_HEAD_ENTRY ( & (pxReadyTasksListEDFVD));
         #endif
         traceTASK_SWITCHED_IN();
 
@@ -4016,7 +4035,7 @@ static void prvInitialiseTaskLists( void )
     pxOverflowDelayedTaskList = &xDelayedTaskList2;
 
     #if (configUSE_EDF_VD_SCHEDULER == 1)
-        vListInitialise(&xReadyTasksListEDFVD);
+        vListInitialise(&pxReadyTasksListEDFVD);
     #endif
 }
 /*-----------------------------------------------------------*/
