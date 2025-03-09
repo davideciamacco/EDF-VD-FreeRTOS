@@ -28,8 +28,6 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32h5xx_hal.h"
-#include "stm32h5xx_nucleo.h"
-#include <stdio.h>
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -59,14 +57,14 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define SWDIO_Pin GPIO_PIN_13
-#define SWDIO_GPIO_Port GPIOA
-#define SWCLK_Pin GPIO_PIN_14
-#define SWCLK_GPIO_Port GPIOA
-#define JTDI_Pin GPIO_PIN_15
-#define JTDI_GPIO_Port GPIOA
-#define SWO_Pin GPIO_PIN_3
-#define SWO_GPIO_Port GPIOB
+#define B1_BLUE_USER_BUTTON_Pin GPIO_PIN_13
+#define B1_BLUE_USER_BUTTON_GPIO_Port GPIOC
+#define T_VCP_RX_Pin GPIO_PIN_3
+#define T_VCP_RX_GPIO_Port GPIOA
+#define T_VCP_TX_Pin GPIO_PIN_4
+#define T_VCP_TX_GPIO_Port GPIOA
+#define USER_LED_Pin GPIO_PIN_5
+#define USER_LED_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
 

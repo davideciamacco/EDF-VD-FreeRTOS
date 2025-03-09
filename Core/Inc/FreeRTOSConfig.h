@@ -51,6 +51,11 @@
 #if defined(__ICCARM__) || defined(__ARMCC_VERSION) || defined(__GNUC__)
 #include <stdint.h>
 extern uint32_t SystemCoreClock;
+void xPortSysTickHandler(void);
+/* USER CODE BEGIN 0 */
+extern void configureTimerForRunTimeStats(void);
+extern unsigned long getRunTimeCounterValue(void);
+/* USER CODE END 0 */
 #endif
 #ifndef CMSIS_device_header
 #define CMSIS_device_header "stm32h5xx.h"
@@ -62,7 +67,7 @@ extern uint32_t SystemCoreClock;
 #define configENABLE_FPU                         0
 #define configENABLE_MPU                         0
 
-#define configUSE_PREEMPTION                     0
+#define configUSE_PREEMPTION                     1
 #define configSUPPORT_STATIC_ALLOCATION          0
 #define configSUPPORT_DYNAMIC_ALLOCATION         1
 #define configUSE_IDLE_HOOK                      0
@@ -74,7 +79,9 @@ extern uint32_t SystemCoreClock;
 #define configTOTAL_HEAP_SIZE                    ((size_t)8192)
 #define configSTACK_ALLOCATION_FROM_SEPARATE_HEAP 0
 #define configMAX_TASK_NAME_LEN                  ( 16 )
+#define configGENERATE_RUN_TIME_STATS            1
 #define configUSE_TRACE_FACILITY                 1
+#define configUSE_STATS_FORMATTING_FUNCTIONS     1
 #define configUSE_16_BIT_TICKS                   0
 #define configUSE_MUTEXES                        1
 #define configQUEUE_REGISTRY_SIZE                8
@@ -161,6 +168,12 @@ header file. */
 
 #define SysTick_Handler xPortSysTickHandler
 
+/* USER CODE BEGIN 2 */
+/* Definitions needed when configGENERATE_RUN_TIME_STATS is on */
+#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS configureTimerForRunTimeStats
+#define portGET_RUN_TIME_COUNTER_VALUE getRunTimeCounterValue
+/* USER CODE END 2 */
+
 /* USER CODE BEGIN Defines */
 /* Section where parameter definitions can be added (for instance, to override default ones in FreeRTOS.h) */
 
@@ -171,6 +184,8 @@ header file. */
     #define configUSE_EDF_VD_SCHEDULER    0
 #endif
 
+#define configUSE_EDF_VD_SCHEDULER 1
+
 #if ( configUSE_EDF_VD_SCHEDULER == 1 )
     #define configTASK_CRTICALITY_LOW 1
     #define configTASK_CRTICALITY_HIGH 2
@@ -178,6 +193,11 @@ header file. */
     #define configEDF_VD_CASE_2 2
     #define systemCRITCALITY_LOW 1
     #define systemCRITCALITY_HIGH 2
+    #define configIDLE_TASK_PERIOD 100
+    #define configIDLE_TASK_WCET 1
+    #define configTIMER_TASK_PERIOD 1
+    #define configTIMER_TASK_WCET 1
+
 #endif
 
 /* USER CODE END Defines */

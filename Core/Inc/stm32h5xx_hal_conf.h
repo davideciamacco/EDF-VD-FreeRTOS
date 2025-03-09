@@ -42,15 +42,21 @@
 #define HAL_MODULE_ENABLED
 /*#define HAL_ADC_MODULE_ENABLED */
 /*#define HAL_CEC_MODULE_ENABLED */
+/*#define HAL_COMP_MODULE_ENABLED */
+/*#define HAL_CORDIC_MODULE_ENABLED */
 /*#define HAL_CRC_MODULE_ENABLED */
 /*#define HAL_CRYP_MODULE_ENABLED */
 /*#define HAL_DAC_MODULE_ENABLED */
 /*#define HAL_DCACHE_MODULE_ENABLED */
 /*#define HAL_DCMI_MODULE_ENABLED */
 /*#define HAL_DTS_MODULE_ENABLED */
+/*#define HAL_ETH_MODULE_ENABLED */
 /*#define HAL_FDCAN_MODULE_ENABLED */
+/*#define HAL_FMAC_MODULE_ENABLED */
 /*#define HAL_GTZC_MODULE_ENABLED */
 /*#define HAL_HASH_MODULE_ENABLED */
+/*#define HAL_HCD_MODULE_ENABLED */
+/*#define HAL_IRDA_MODULE_ENABLED */
 /*#define HAL_IWDG_MODULE_ENABLED */
 /*#define HAL_I2C_MODULE_ENABLED */
 /*#define HAL_I3C_MODULE_ENABLED */
@@ -58,27 +64,28 @@
 /*#define HAL_LPTIM_MODULE_ENABLED */
 /*#define HAL_NAND_MODULE_ENABLED */
 /*#define HAL_NOR_MODULE_ENABLED */
+/*#define HAL_OPAMP_MODULE_ENABLED */
 /*#define HAL_XSPI_MODULE_ENABLED */
 /*#define HAL_OTFDEC_MODULE_ENABLED */
 /*#define HAL_PKA_MODULE_ENABLED */
 /*#define HAL_RNG_MODULE_ENABLED */
 /*#define HAL_RTC_MODULE_ENABLED */
+/*#define HAL_SAI_MODULE_ENABLED */
 /*#define HAL_SD_MODULE_ENABLED */
+/*#define HAL_SDRAM_MODULE_ENABLED */
 /*#define HAL_MMC_MODULE_ENABLED */
+/*#define HAL_SMARTCARD_MODULE_ENABLED */
+/*#define HAL_SMBUS_MODULE_ENABLED */
 /*#define HAL_SPI_MODULE_ENABLED */
 /*#define HAL_SRAM_MODULE_ENABLED */
 /*#define HAL_TIM_MODULE_ENABLED */
 /*#define HAL_RAMCFG_MODULE_ENABLED */
-#define HAL_UART_MODULE_ENABLED
+/*#define HAL_UART_MODULE_ENABLED */
 /*#define HAL_USART_MODULE_ENABLED */
 /*#define HAL_WWDG_MODULE_ENABLED */
 /*#define HAL_PSSI_MODULE_ENABLED */
 /*#define HAL_ICACHE_MODULE_ENABLED */
 /*#define HAL_PCD_MODULE_ENABLED */
-/*#define HAL_HCD_MODULE_ENABLED */
-/*#define HAL_SMARTCARD_MODULE_ENABLED */
-/*#define HAL_SMBUS_MODULE_ENABLED */
-/*#define HAL_IRDA_MODULE_ENABLED */
 #define HAL_GPIO_MODULE_ENABLED
 #define HAL_EXTI_MODULE_ENABLED
 #define HAL_DMA_MODULE_ENABLED
@@ -95,7 +102,7 @@
   *        (when HSE is used as system clock source, directly or through the PLL).
   */
 #if !defined  (HSE_VALUE)
-  #define HSE_VALUE    25000000U /*!< Value of the External oscillator in Hz */
+  #define HSE_VALUE    24000000U /*!< Value of the External oscillator in Hz */
 #endif /* HSE_VALUE */
 
 #if !defined  (HSE_STARTUP_TIMEOUT)
@@ -156,8 +163,8 @@
   #define LSE_STARTUP_TIMEOUT    5000UL     /*!< Time out for LSE start up, in ms */
 #endif /* LSE_STARTUP_TIMEOUT */
 /**
-  * @brief External clock source for SPI peripheral
-  *        This value is used by the SPI HAL module to compute the SPI clock source
+  * @brief External clock source for SPI/SAI peripheral
+  *        This value is used by the SPI/SAI HAL module to compute the SPI/SAI clock source
   *        frequency, this source is inserted directly through I2S_CKIN pad.
 
   */
@@ -201,11 +208,15 @@
   */
 #define  USE_HAL_ADC_REGISTER_CALLBACKS       0U    /* ADC register callback disabled       */
 #define  USE_HAL_CEC_REGISTER_CALLBACKS       0U    /* CEC register callback disabled       */
+#define  USE_HAL_COMP_REGISTER_CALLBACKS      0U    /* COMP register callback disabled      */
+#define  USE_HAL_CORDIC_REGISTER_CALLBACKS    0U    /* CORDIC register callback disabled    */
 #define  USE_HAL_CRYP_REGISTER_CALLBACKS      0U    /* CRYP register callback disabled      */
 #define  USE_HAL_DAC_REGISTER_CALLBACKS       0U    /* DAC register callback disabled       */
 #define  USE_HAL_DCMI_REGISTER_CALLBACKS      0U    /* DCMI register callback disabled      */
 #define  USE_HAL_DTS_REGISTER_CALLBACKS       0U    /* DTS register callback disabled       */
+#define  USE_HAL_ETH_REGISTER_CALLBACKS       0U    /* ETH register callback disabled       */
 #define  USE_HAL_FDCAN_REGISTER_CALLBACKS     0U    /* FDCAN register callback disabled     */
+#define  USE_HAL_FMAC_REGISTER_CALLBACKS      0U    /* FMAC register callback disabled      */
 #define  USE_HAL_NOR_REGISTER_CALLBACKS       0U    /* NOR register callback disabled       */
 #define  USE_HAL_HASH_REGISTER_CALLBACKS      0U    /* HASH register callback disabled      */
 #define  USE_HAL_HCD_REGISTER_CALLBACKS       0U    /* HCD register callback disabled       */
@@ -217,13 +228,16 @@
 #define  USE_HAL_LPTIM_REGISTER_CALLBACKS     0U    /* LPTIM register callback disabled     */
 #define  USE_HAL_MMC_REGISTER_CALLBACKS       0U    /* MMC register callback disabled       */
 #define  USE_HAL_NAND_REGISTER_CALLBACKS      0U    /* NAND register callback disabled      */
+#define  USE_HAL_OPAMP_REGISTER_CALLBACKS     0U    /* OPAMP register callback disabled     */
 #define  USE_HAL_OTFDEC_REGISTER_CALLBACKS    0U    /* OTFDEC register callback disabled    */
 #define  USE_HAL_PCD_REGISTER_CALLBACKS       0U    /* PCD register callback disabled       */
 #define  USE_HAL_PKA_REGISTER_CALLBACKS       0U    /* PKA register callback disabled       */
 #define  USE_HAL_RAMCFG_REGISTER_CALLBACKS    0U    /* RAMCFG register callback disabled    */
 #define  USE_HAL_RNG_REGISTER_CALLBACKS       0U    /* RNG register callback disabled       */
 #define  USE_HAL_RTC_REGISTER_CALLBACKS       0U    /* RTC register callback disabled       */
+#define  USE_HAL_SAI_REGISTER_CALLBACKS       0U    /* SAI register callback disabled       */
 #define  USE_HAL_SD_REGISTER_CALLBACKS        0U    /* SD register callback disabled        */
+#define  USE_HAL_SDRAM_REGISTER_CALLBACKS     0U    /* SDRAM register callback disabled     */
 #define  USE_HAL_SMARTCARD_REGISTER_CALLBACKS 0U    /* SMARTCARD register callback disabled */
 #define  USE_HAL_SMBUS_REGISTER_CALLBACKS     0U    /* SMBUS register callback disabled     */
 #define  USE_HAL_SPI_REGISTER_CALLBACKS       0U    /* SPI register callback disabled       */
@@ -312,6 +326,10 @@
   #include "stm32h5xx_hal_sram.h"
 #endif /* HAL_SRAM_MODULE_ENABLED */
 
+#ifdef HAL_SDRAM_MODULE_ENABLED
+  #include "stm32h5xx_hal_sdram.h"
+#endif /* HAL_SDRAM_MODULE_ENABLED */
+
 #ifdef HAL_MMC_MODULE_ENABLED
  #include "stm32h5xx_hal_mmc.h"
 #endif /* HAL_MMC_MODULE_ENABLED */
@@ -360,6 +378,10 @@
  #include "stm32h5xx_hal_rtc.h"
 #endif /* HAL_RTC_MODULE_ENABLED */
 
+#ifdef HAL_SAI_MODULE_ENABLED
+ #include "stm32h5xx_hal_sai.h"
+#endif /* HAL_SAI_MODULE_ENABLED */
+
 #ifdef HAL_SD_MODULE_ENABLED
  #include "stm32h5xx_hal_sd.h"
 #endif /* HAL_SD_MODULE_ENABLED */
@@ -404,6 +426,14 @@
  #include "stm32h5xx_hal_hcd.h"
 #endif /* HAL_HCD_MODULE_ENABLED */
 
+#ifdef HAL_COMP_MODULE_ENABLED
+ #include "stm32h5xx_hal_comp.h"
+#endif /* HAL_COMP_MODULE_ENABLED */
+
+#ifdef HAL_CORDIC_MODULE_ENABLED
+ #include "stm32h5xx_hal_cordic.h"
+#endif /* HAL_CORDIC_MODULE_ENABLED */
+
 #ifdef HAL_DCMI_MODULE_ENABLED
  #include "stm32h5xx_hal_dcmi.h"
 #endif /* HAL_DCMI_MODULE_ENABLED */
@@ -412,6 +442,10 @@
  #include "stm32h5xx_hal_exti.h"
 #endif /* HAL_EXTI_MODULE_ENABLED */
 
+#ifdef HAL_ETH_MODULE_ENABLED
+ #include "stm32h5xx_hal_eth.h"
+#endif /* HAL_ETH_MODULE_ENABLED */
+
 #ifdef HAL_FDCAN_MODULE_ENABLED
  #include "stm32h5xx_hal_fdcan.h"
 #endif /* HAL_FDCAN_MODULE_ENABLED */
@@ -419,6 +453,14 @@
 #ifdef HAL_CEC_MODULE_ENABLED
   #include "stm32h5xx_hal_cec.h"
 #endif /* HAL_CEC_MODULE_ENABLED */
+
+#ifdef HAL_FMAC_MODULE_ENABLED
+ #include "stm32h5xx_hal_fmac.h"
+#endif /* HAL_FMAC_MODULE_ENABLED */
+
+#ifdef HAL_OPAMP_MODULE_ENABLED
+  #include "stm32h5xx_hal_opamp.h"
+#endif /* HAL_OPAMP_MODULE_ENABLED */
 
 #ifdef HAL_OTFDEC_MODULE_ENABLED
  #include "stm32h5xx_hal_otfdec.h"

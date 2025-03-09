@@ -273,7 +273,7 @@
                         ( ( UBaseType_t ) configTIMER_TASK_PRIORITY ) | portPRIVILEGE_BIT,
                         &xTimerTaskHandle,
                         configTIMER_TASK_PERIOD,
-                        0,
+                        configTASK_CRTICALITY_LOW,
                         configTIMER_TASK_WCET,
                         configTIMER_TASK_WCET);
                 #else
@@ -284,7 +284,7 @@
                         NULL,
                         ( ( UBaseType_t ) configTIMER_TASK_PRIORITY ) | portPRIVILEGE_BIT,
                         &xTimerTaskHandle);
-                #endif
+                #endif	  
             }
             #endif /* configSUPPORT_STATIC_ALLOCATION */
         }
